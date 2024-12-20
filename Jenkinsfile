@@ -2,7 +2,7 @@ pipeline {
     agent any
     tools {
         jdk 'jdk 20'       // Use the correct JDK name
-        maven 'maven 3'    // Use the correct Maven name
+        maven 'maven 3'
     }
     environment {
         REPO_URL = 'https://github.com/ABDELMOUIZ1/GestionBibliotheque.git'
@@ -17,24 +17,24 @@ pipeline {
         stage('Checkout from GitHub') {
             steps {
                 git branch: 'main',
-                    credentialsId: 'github',
-                    url: 'https://github.com/ABDELMOUIZ1/GestionBibliotheque.git'
+                credentialsId: 'github',
+                url: REPO_URL
             }
         }
         stage('Build') {
             steps {
-                sh 'mvn clean compile'
+                bat 'mvn clean compile'
             }
         }
         stage('Test') {
             steps {
-                sh 'mvn test'
+                bat 'mvn test'
             }
         }
         stage('Quality Analysis') {
             steps {
-                withSonarQubeEnv('sonar') {
-                    sh 'mvn sonar:sonar'
+                withSonarQubeEnv(installationName: 'sonar', credentialsId: SONARQUBE_CREDENTIALS_ID) {
+                    bat 'mvn sonar:sonar'
                 }
             }
         }
