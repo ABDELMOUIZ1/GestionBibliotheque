@@ -1,26 +1,26 @@
 pipeline {
     agent any
     tools {
-            jdk 'jdk20'
-            maven 'maven'
+        jdk 'jdk 20'       // Use the correct JDK name
+        maven 'maven 3'    // Use the correct Maven name
     }
     environment {
-            REPO_URL = 'git remote add origin https://github.com/ABDELMOUIZ1/GestionBibliotheque.git'
-            SONARQUBE_CREDENTIALS_ID = 'sonar'
+        REPO_URL = 'https://github.com/ABDELMOUIZ1/GestionBibliotheque.git'
+        SONARQUBE_CREDENTIALS_ID = 'sonar'
     }
     stages {
-         stage('clean work-space') {
-                    steps {
-                        cleanWs()
-                    }
-         }
-         stage('Checkout from github') {
-                     steps {
-                         git branch: 'main',
-                         credentialsId: 'github',
-                         url: 'https://github.com/ABDELMOUIZ1'
-                     }
-         }
+        stage('Clean Workspace') {
+            steps {
+                cleanWs()
+            }
+        }
+        stage('Checkout from GitHub') {
+            steps {
+                git branch: 'main',
+                    credentialsId: 'github',
+                    url: 'https://github.com/ABDELMOUIZ1/GestionBibliotheque.git'
+            }
+        }
         stage('Build') {
             steps {
                 sh 'mvn clean compile'
@@ -33,8 +33,8 @@ pipeline {
         }
         stage('Quality Analysis') {
             steps {
-                withSonarQubeEnv(installationName: 'sonar' , credentialsId: SONARQUBE_CREDENTIALS_ID) {
-                                    sh 'mvn sonar:sonar'
+                withSonarQubeEnv('sonar') {
+                    sh 'mvn sonar:sonar'
                 }
             }
         }
@@ -44,20 +44,20 @@ pipeline {
             }
         }
     }
-     post {
-            success {
-                mail(
-                    to: 'abdelmoize1234@gmail.com',
-                    subject: 'Build Success',
-                    body: 'Le build a été complété avec succès.'
-                )
-            }
-            failure {
-                mail(
-                    to: 'abdelmoize1234@gmail.com',
-                    subject: 'Build Failed',
-                    body: 'Le build a échoué.'
-                )
-            }
-     }
+    post {
+        success {
+            mail(
+                to: 'abdelmoize1234@gmail.com',
+                subject: 'Build Success',
+                body: 'Le build a été complété avec succès.'
+            )
+        }
+        failure {
+            mail(
+                to: 'abdelmoize1234@gmail.com',
+                subject: 'Build Failed',
+                body: 'Le build a échoué.'
+            )
+        }
+    }
 }
