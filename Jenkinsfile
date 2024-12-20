@@ -33,7 +33,7 @@ pipeline {
         }
         stage('Quality Analysis') {
             steps {
-                withSonarQubeEnv(installationName: 'sonar', credentialsId: SONARQUBE_CREDENTIALS_ID) {
+                withSonarQubeEnv(installationName: 'sonar') {
                     bat 'mvn sonar:sonar'
                 }
             }
